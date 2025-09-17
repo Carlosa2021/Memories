@@ -35,9 +35,10 @@ export default function NebulaAssistant() {
           ...messages.map(({ role, content }) => ({ role, content })),
           { role: 'user', content: input },
         ],
-        context: { sessionId: sessionRef.current },
+        id: sessionRef.current,
+        context: { chain_ids: [137], auto: true }, // Auto-exec para admin
       };
-      const res = await fetch('/api/nebula', {
+      const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

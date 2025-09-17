@@ -8,6 +8,8 @@ import {
   erc1155CollectionContract, // importa tu contrato 1155
 } from '@/lib/contracts';
 import { NFTCard } from '@/components/ui/NFTCard';
+import BuyFundsWidget from '@/components/BuyFundsWidget';
+import BridgeWidget from '@/components/BridgeWidget';
 import type { DirectListing } from 'thirdweb/extensions/marketplace';
 
 export default function MarketplacePage() {
@@ -90,7 +92,8 @@ export default function MarketplacePage() {
             Mercado de Memorias NFT
           </h1>
           <p className="text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed">
-            Descubre y adquiere NFTs únicos para tus momentos especiales. Crea, colecciona y comparte recuerdos eternos.
+            Descubre y adquiere NFTs únicos para tus momentos especiales. Crea,
+            colecciona y comparte recuerdos eternos.
           </p>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent"></div>
@@ -106,8 +109,18 @@ export default function MarketplacePage() {
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-12 pr-4 py-4 border-0 rounded-2xl bg-white/80 backdrop-blur-sm shadow-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-lg placeholder-gray-500 transition-all duration-300"
           />
-          <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <svg
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
         </div>
         <select
@@ -125,18 +138,46 @@ export default function MarketplacePage() {
         <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-2xl p-1 shadow-lg">
           <button
             onClick={() => setViewMode('grid')}
-            className={`px-4 py-2 rounded-xl transition-all duration-300 ${viewMode === 'grid' ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 hover:text-indigo-600'}`}
+            className={`px-4 py-2 rounded-xl transition-all duration-300 ${
+              viewMode === 'grid'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-gray-600 hover:text-indigo-600'
+            }`}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+              />
             </svg>
           </button>
           <button
             onClick={() => setViewMode('list')}
-            className={`px-4 py-2 rounded-xl transition-all duration-300 ${viewMode === 'list' ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 hover:text-indigo-600'}`}
+            className={`px-4 py-2 rounded-xl transition-all duration-300 ${
+              viewMode === 'list'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-gray-600 hover:text-indigo-600'
+            }`}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 10h16M4 14h16M4 18h16"
+              />
             </svg>
           </button>
         </div>
@@ -153,14 +194,25 @@ export default function MarketplacePage() {
             <p className="ml-4 text-lg text-gray-600">Cargando memorias...</p>
           </div>
         ) : (
-          <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1'}`}>
+          <div
+            className={`grid gap-8 ${
+              viewMode === 'grid'
+                ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+                : 'grid-cols-1'
+            }`}
+          >
             {filteredListings.map((listing) => {
               const contract = getCollectionContract(
                 listing.assetContractAddress,
               );
               if (!contract) return null;
               return (
-                <div key={listing.id.toString()} className={`transform hover:scale-105 transition-transform duration-300 ${viewMode === 'list' ? 'flex items-center gap-6' : ''}`}>
+                <div
+                  key={listing.id.toString()}
+                  className={`transform hover:scale-105 transition-transform duration-300 ${
+                    viewMode === 'list' ? 'flex items-center gap-6' : ''
+                  }`}
+                >
                   <NFTCard
                     listingId={Number(listing.id)}
                     tokenId={Number(listing.tokenId)}
@@ -172,6 +224,17 @@ export default function MarketplacePage() {
             })}
           </div>
         )}
+      </section>
+
+      {/* Sección de Funding */}
+      <section className="max-w-7xl mx-auto mt-16 px-4 py-16 bg-gray-50 rounded-2xl">
+        <h2 className="text-3xl font-bold text-center mb-8">
+          Obtén Fondos para Comprar
+        </h2>
+        <div className="flex justify-center gap-4">
+          <BuyFundsWidget />
+          <BridgeWidget />
+        </div>
       </section>
     </div>
   );
