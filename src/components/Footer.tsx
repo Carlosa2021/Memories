@@ -9,7 +9,7 @@ export function Footer() {
         {/* Logo y marca */}
         <div className="flex items-center gap-2">
           <span className="font-extrabold bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent text-xl tracking-tight select-none">
-            ChainX
+            Memories
           </span>
         </div>
         {/* Enlaces y redes sociales */}
@@ -47,7 +47,7 @@ export function Footer() {
         </div>
         {/* Copyright */}
         <div className="text-sm text-zinc-200 dark:text-zinc-400 font-light text-center md:text-right mt-4 md:mt-0">
-          © {new Date().getFullYear()} ChainX. Todos los derechos reservados.
+          © {new Date().getFullYear()} Memories. Todos los derechos reservados.
         </div>
       </div>
     </footer>

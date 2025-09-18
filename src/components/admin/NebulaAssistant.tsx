@@ -9,6 +9,8 @@ type Message = {
   role: 'user' | 'nebula';
   content: string;
   timestamp: number;
+  toolCalls?: { name: string; [key: string]: unknown }[];
+  toolResults?: { [key: string]: unknown }[];
 };
 
 export default function NebulaAssistant() {
@@ -48,7 +50,13 @@ export default function NebulaAssistant() {
       if (res.ok && typeof data.message === 'string') {
         setMessages((prev) => [
           ...prev,
-          { role: 'nebula', content: data.message, timestamp: Date.now() },
+          {
+            role: 'nebula',
+            content: data.message,
+            timestamp: Date.now(),
+            toolCalls: data.toolCalls,
+            toolResults: data.toolResults,
+          },
         ]);
       } else {
         setMessages((prev) => [
@@ -65,18 +73,14 @@ export default function NebulaAssistant() {
           },
         ]);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Error técnico desconocido';
       setMessages((prev) => [
         ...prev,
         {
           role: 'nebula',
-          content:
-            'Error técnico: ' +
-            (err && err.message
-              ? err.message
-              : typeof err === 'string'
-              ? err
-              : JSON.stringify(err)),
+          content: 'Error técnico: ' + errorMessage,
           timestamp: Date.now(),
         },
       ]);
@@ -129,13 +133,20 @@ export default function NebulaAssistant() {
               >
                 <ReactMarkdown
                   components={{
-                    img: (props) => (
-                      <img
-                        {...props}
-                        className="rounded-md border shadow max-h-44 my-2"
-                        alt={props.alt || ''}
-                      />
-                    ),
+                    img: (props) => {
+                      const { src, alt } = props as unknown as {
+                        src?: string;
+                        alt?: string;
+                      };
+                      return (
+                        <img // eslint-disable-line @next/next/no-img-element
+                          src={src || ''}
+                          alt={alt || ''}
+                          className="rounded-md border shadow max-h-44 my-2"
+                          loading="lazy"
+                        />
+                      );
+                    },
                     video: (props) => (
                       <video
                         {...props}
@@ -170,6 +181,19 @@ export default function NebulaAssistant() {
                 >
                   {msg.content}
                 </ReactMarkdown>
+                {msg.toolCalls && msg.toolCalls.length > 0 && (
+                  <div className="mt-2">
+                    {msg.toolCalls.map((tool, idx) => (
+                      <button
+                        key={idx}
+                        className="mr-2 px-3 py-1 bg-indigo-600 text-white rounded text-sm"
+                        onClick={() => alert(`Ejecutar tool: ${tool.name}`)}
+                      >
+                        {tool.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <div className="text-[0.7em] opacity-60 text-right mt-1">
                   {msg.role === 'user' ? 'Tú' : 'Nebula'} ·{' '}
                   {new Date(msg.timestamp).toLocaleTimeString()}

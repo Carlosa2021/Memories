@@ -3,26 +3,20 @@ import { useActiveAccount } from 'thirdweb/react';
 import { getOwnedNFTs as getOwnedNFTs721 } from 'thirdweb/extensions/erc721';
 import { getOwnedNFTs as getOwnedNFTs1155 } from 'thirdweb/extensions/erc1155';
 import { useEffect, useState } from 'react';
-import {
-  NFTProvider,
-  NFTMedia,
-  NFTName,
-  NFTDescription,
-  CreateDirectListingButton,
-} from 'thirdweb/react';
+import { NFTProvider, NFTMedia, NFTName, NFTDescription } from 'thirdweb/react';
 import { Card, CardContent } from '@/components/ui/card';
 import {
-  marketplaceContract,
   nftCollectionContract,
-  erc1155CollectionContract, // Nuevo: tu contrato ERC-1155, ajusta el nombre según lo tengas.
+  erc1155CollectionContract,
 } from '@/lib/contracts';
-import { polygon } from 'thirdweb/chains';
-import { client } from '@/lib/thirdweb/client-browser';
+// import { client } from '@/lib/thirdweb/client-browser';
+import { QuickListButton } from '@/components/QuickListButton';
 
+type TipoNFT = 'ERC721' | 'ERC1155';
 interface OwnedNFT {
   id: bigint;
-  tipo?: string; // 'ERC721' o 'ERC1155'
-  quantityOwned?: bigint; // Sólo ERC-1155
+  tipo: TipoNFT;
+  quantityOwned?: bigint; // Sólo para ERC1155
 }
 
 export default function MisNFTsPage() {
@@ -56,19 +50,18 @@ export default function MisNFTsPage() {
           count: 50,
         });
 
-        // Añade el tipo para distinguir en el render
-        const nfts721WithType = nfts721.map((nft: any) => ({
-          ...nft,
+        // Normaliza a nuestro tipo local
+        const nfts721WithType: OwnedNFT[] = nfts721.map((nft) => ({
+          id: nft.id,
           tipo: 'ERC721',
         }));
 
-        const nfts1155WithType = nfts1155.map((nft: any) => ({
-          ...nft,
+        const nfts1155WithType: OwnedNFT[] = nfts1155.map((nft) => ({
+          id: nft.id,
           tipo: 'ERC1155',
-          quantityOwned: nft.quantityOwned, // Solo para ERC1155
+          quantityOwned: nft.quantityOwned,
         }));
 
-        // Combina ambas colecciones
         setNfts([...nfts721WithType, ...nfts1155WithType]);
       } catch (err) {
         console.error('Error al obtener NFTs:', err);
@@ -132,29 +125,18 @@ export default function MisNFTsPage() {
                     onChange={(e) => handlePriceChange(nft.id, e.target.value)}
                     className="mt-3 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-900"
                   />
-                  <CreateDirectListingButton
-                    contractAddress={marketplaceContract.address}
+                  <QuickListButton
                     assetContractAddress={
                       nft.tipo === 'ERC1155'
                         ? erc1155CollectionContract.address
                         : nftCollectionContract.address
                     }
                     tokenId={nft.id}
-                    chain={polygon}
-                    client={client}
-                    pricePerToken={
-                      listingPrices[nft.id.toString()] ?? undefined
-                    }
+                    pricePerToken={listingPrices[nft.id.toString()] ?? ''}
                     quantity={1n}
-                    onTransactionConfirmed={() =>
-                      alert('¡NFT listado para reventa!')
-                    }
-                    onError={(err) => alert('Error al listar: ' + err.message)}
-                    disabled={!listingPrices[nft.id.toString()]}
                     className="bg-green-600 text-white mt-3 px-4 py-2 rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  >
-                    Listar en Marketplace
-                  </CreateDirectListingButton>
+                    onDone={() => alert('¡NFT listado para reventa!')}
+                  />
                 </CardContent>
               </Card>
             </NFTProvider>

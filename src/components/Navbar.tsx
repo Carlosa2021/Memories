@@ -16,7 +16,7 @@ export function Navbar() {
         {/* Logo */}
         <Link href="/" className="group flex items-center gap-2 select-none">
           <span className="font-extrabold text-xl md:text-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent tracking-tight">
-            ChainX
+            Memories
           </span>
         </Link>
 
@@ -52,6 +52,12 @@ export function Navbar() {
             href="/admin"
           >
             Admin
+          </Link>
+          <Link
+            className="relative hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-300 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-indigo-500 before:to-purple-500 before:transition-all before:duration-300 hover:before:w-full"
+            href="/templates"
+          >
+            Plantillas
           </Link>
         </nav>
 
@@ -99,6 +105,12 @@ export function Navbar() {
           href="/admin"
         >
           Admin
+        </Link>
+        <Link
+          className="hover:text-indigo-600 dark:hover:text-indigo-400 px-2"
+          href="/templates"
+        >
+          Plantillas
         </Link>
       </div>
     </nav>

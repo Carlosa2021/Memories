@@ -80,6 +80,7 @@ export const IPFSNFTMedia = ({ contract, tokenId, className = '' }: Props) => {
         className={className}
       />
       {/* Imagen oculta que sólo controla errores, para fallback manual por gateways */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={imageUrls[currentIdx]}
         alt="NFT preview"

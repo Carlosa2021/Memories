@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -25,9 +26,11 @@ export default function Home() {
           </Link>
         </div>
         {/* Imagen de portada representativa */}
-        <img
+        <Image
           src="/images/fondo.png"
           alt="Banner Web3 Real Estate"
+          width={1200}
+          height={600}
           className="mt-12 w-full max-w-3xl rounded-3xl shadow-xl border"
         />
       </section>

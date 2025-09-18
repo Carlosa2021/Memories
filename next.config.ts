@@ -1,4 +1,6 @@
 // next.config.ts
+type ResolveConfig = { fallback?: Record<string, false | string> };
+type WebpackLikeConfig = { resolve?: ResolveConfig };
 
 const nextConfig = {
   env: {
@@ -33,6 +35,17 @@ const nextConfig = {
         pathname: '/ipfs/**',
       },
     ],
+  },
+  webpack: (config: WebpackLikeConfig, { isServer }: { isServer: boolean }) => {
+    if (!isServer) {
+      // Asegurar que resolve y fallback existen antes de mutarlos
+      config.resolve = config.resolve ?? {};
+      config.resolve.fallback = {
+        ...(config.resolve.fallback ?? {}),
+        ws: false,
+      };
+    }
+    return config;
   },
 };
 

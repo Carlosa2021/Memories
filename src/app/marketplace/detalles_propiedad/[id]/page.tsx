@@ -80,12 +80,13 @@ export default function PropertyPage() {
     : undefined; // 0 = ERC-721, 1 = ERC-1155
 
   // Selecciona el contrato adecuado
-  const nftContract =
-    assetContractAddress && getContractByAddress(assetContractAddress);
+  const nftContract = assetContractAddress
+    ? getContractByAddress(assetContractAddress)
+    : null;
 
   // tokenURI para colección correspondiente
   const { data: tokenUriRaw } = useReadContract({
-    contract: nftContract ?? nftCollectionContract,
+    contract: nftContract ? nftContract : nftCollectionContract,
     method: 'tokenURI',
     params: [tokenId ?? 0n] as [bigint],
   });

@@ -1,4 +1,4 @@
-import { convertToModelMessages, streamText } from 'ai';
+import { convertToModelMessages, generateText } from 'ai';
 import { createThirdwebAI } from '@thirdweb-dev/ai-sdk-provider';
 
 export const maxDuration = 300;
@@ -10,7 +10,7 @@ const thirdwebAI = createThirdwebAI({
 export async function POST(req: Request) {
   const { messages, id, context } = await req.json();
 
-  const result = streamText({
+  const result = await generateText({
     model: thirdwebAI.chat(id, {
       context: {
         chain_ids: context?.chain_ids ?? [137], // Polygon por defecto
@@ -22,7 +22,9 @@ export async function POST(req: Request) {
     tools: thirdwebAI.tools(), // firma tx, swaps, monitor
   });
 
-  return result.toAIStreamResponse({
-    sendReasoning: true,
+  return Response.json({
+    message: result.text,
+    toolCalls: result.toolCalls,
+    toolResults: result.toolResults,
   });
 }

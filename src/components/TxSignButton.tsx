@@ -24,13 +24,13 @@ export function TxSignButton({
       onClick={async () => {
         const prepared = await prepareTransaction({
           client,
-          account,
           chain: defineChain(tx.chain_id),
           to: tx.to,
           data: tx.data,
-          value: tx.value as any,
+          value: BigInt(tx.value || '0'),
         });
         const { transactionHash, chain } = await sendTransaction({
+          account: account!,
           transaction: prepared,
         });
         onResult(transactionHash, chain.id);

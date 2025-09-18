@@ -1,19 +1,38 @@
 'use client';
 
 import { ConnectButton, lightTheme, darkTheme } from 'thirdweb/react';
-import { inAppWallet } from 'thirdweb/wallets';
+import { inAppWallet, createWallet } from 'thirdweb/wallets';
 import { client } from '@/lib/thirdweb/client';
 
 // Configurar wallets con gas patrocinado
 const wallets = [
   inAppWallet({
-    auth: { options: ['email', 'google', 'passkey'] },
+    auth: {
+      options: [
+        'email',
+        'google',
+        'passkey',
+        'phone',
+        'apple',
+        'facebook',
+        'discord',
+        'telegram',
+        'x',
+        'farcaster',
+        'coinbase',
+      ],
+    },
     metadata: {
-      name: 'Memories NFT',
+      name: 'Memories',
       image: { src: '/logo.svg', width: 96, height: 96 },
     },
     executionMode: { mode: 'EIP7702', sponsorGas: true },
   }),
+  // Wallets externos populares
+  createWallet('io.metamask'),
+  createWallet('com.coinbase.wallet'),
+  createWallet('me.rainbow'),
+  createWallet('io.rabby'),
 ];
 
 // Tipa el prop correctamente aquí:
