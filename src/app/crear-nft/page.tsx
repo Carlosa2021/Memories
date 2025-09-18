@@ -2,13 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useActiveAccount } from 'thirdweb/react';
-import { mintTo } from 'thirdweb/extensions/erc721';
-import { mintTo as mintTo1155 } from 'thirdweb/extensions/erc1155';
+import { claimTo } from 'thirdweb/extensions/erc1155';
 import { sendTransaction } from 'thirdweb';
-import {
-  nftCollectionContract,
-  erc1155CollectionContract,
-} from '@/lib/contracts';
+import { upload } from 'thirdweb/storage';
+import { nftDropContract, editionDropContract } from '@/lib/contracts';
+import { client } from '@/lib/thirdweb/client-browser';
 import Image from 'next/image';
 import { LoaderCircle, Sparkles, Info } from 'lucide-react';
 
@@ -27,7 +25,7 @@ export default function CrearNFTPage() {
   const [quantity, setQuantity] = useState(1);
   const [aiEnabled, setAiEnabled] = useState<boolean>(false);
 
-  // Detecta si la IA está habilitada (no bloquear el flujo manual)
+  // Detecta si la IA está habilitada
   useEffect(() => {
     const checkAI = async () => {
       try {
@@ -61,40 +59,98 @@ export default function CrearNFTPage() {
     setLoading(true);
 
     try {
+      console.log('🚀 Iniciando proceso de minteo...');
+      setFeedback('🔄 Subiendo archivos a IPFS...');
+
+      // Subir imagen a IPFS
       const imageFile = new File([image], image.name, { type: image.type });
+      console.log('📤 Subiendo imagen a IPFS...');
+
+      const imageUri = await upload({
+        client,
+        files: [imageFile],
+      });
+
+      console.log('✅ Imagen subida:', imageUri);
+
+      // Crear metadata JSON
+      const metadata = {
+        name,
+        description,
+        image: imageUri,
+        attributes: [
+          {
+            trait_type: 'Creation Method',
+            value: mode === 'ai' ? 'AI Generated' : 'Manual',
+          },
+          {
+            trait_type: 'Type',
+            value: nftType === '721' ? 'Unique NFT' : 'Edition',
+          },
+          {
+            trait_type: 'Created',
+            value: new Date().toISOString(),
+          },
+        ],
+      };
+
+      console.log('📤 Subiendo metadata a IPFS...');
+      const metadataUri = await upload({
+        client,
+        files: [
+          new File([JSON.stringify(metadata)], 'metadata.json', {
+            type: 'application/json',
+          }),
+        ],
+      });
+
+      console.log('✅ Metadata subida:', metadataUri);
+      setFeedback('⛽ Preparando transacción blockchain...');
 
       let tx;
       let contractName;
+      let contractAddress;
 
       if (nftType === '721') {
-        // Mintear ERC-721 (NFT único)
-        tx = mintTo({
-          contract: nftCollectionContract,
+        console.log('💎 Minteando NFT único (ERC-721)...');
+        // Usar claimTo para Edition Drop (Business Card)
+        tx = claimTo({
+          contract: nftDropContract,
           to: account.address,
-          nft: { name, description, image: imageFile },
+          tokenId: BigInt(0), // Token ID 0 para el drop
+          quantity: BigInt(1),
         });
-        contractName = 'ERC-721';
+        contractName = 'ERC-721 (Business Card Drop)';
+        contractAddress = nftDropContract.address;
       } else {
-        // Mintear ERC-1155 (Colección múltiple)
-        tx = mintTo1155({
-          contract: erc1155CollectionContract,
+        console.log('🎨 Minteando colección (ERC-1155)...');
+        // Usar claimTo para Edition Drop (La Estrella Entonada)
+        tx = claimTo({
+          contract: editionDropContract,
           to: account.address,
-          nft: { name, description, image: imageFile },
-          supply: BigInt(quantity),
+          tokenId: BigInt(0), // Token ID 0 para el drop
+          quantity: BigInt(quantity),
         });
-        contractName = 'ERC-1155';
+        contractName = 'ERC-1155 (La Estrella Entonada)';
+        contractAddress = editionDropContract.address;
       }
 
+      console.log('💫 Enviando transacción...');
       const txResult = await sendTransaction({ transaction: tx, account });
 
       setFeedback(
-        `✅ NFT ${contractName} minteado con éxito${
+        `✅ <strong>¡NFT ${contractName} minteado exitosamente!</strong>${
           nftType === '1155' ? ` (${quantity} copias)` : ''
-        }. <a href="https://polygonscan.com/tx/${
+        }<br/>
+        📋 Metadata: <a href="${metadataUri}" target="_blank" class="underline text-blue-400">Ver en IPFS</a><br/>
+        🖼️ Imagen: <a href="${imageUri}" target="_blank" class="underline text-blue-400">Ver imagen</a><br/>
+        📄 Contrato: ${contractAddress}<br/>
+        🔗 <a href="https://polygonscan.com/tx/${
           txResult.transactionHash
-        }" target="_blank" rel="noopener noreferrer" class="underline text-indigo-400 hover:text-indigo-300">Ver transacción</a>`,
+        }" target="_blank" rel="noopener noreferrer" class="underline text-indigo-400 hover:text-indigo-300">Ver transacción en PolygonScan</a>`,
       );
 
+      // Limpiar campos
       setName('');
       setDescription('');
       setImage(null);
@@ -102,13 +158,42 @@ export default function CrearNFTPage() {
       setAiPrompt('');
       setQuantity(1);
     } catch (error: unknown) {
-      console.error('❌ Error al mintear:', error);
+      console.error('❌ Error completo al mintear:', error);
       const msg = error instanceof Error ? error.message : String(error);
-      setFeedback('❌ Error al mintear: ' + msg);
+
+      if (msg.includes('upload') || msg.includes('IPFS')) {
+        setFeedback('❌ Error subiendo archivos a IPFS. Verifica tu conexión.');
+      } else if (
+        msg.includes('claim conditions') ||
+        msg.includes('no active claim')
+      ) {
+        setFeedback(`
+          ⚠️ <strong>Claim conditions no configuradas</strong><br/>
+          El contrato Edition Drop necesita condiciones de claim activas.<br/><br/>
+          <strong>💡 Solución:</strong><br/>
+          1️⃣ Ve a <a href="https://thirdweb.com/dashboard" target="_blank" class="text-blue-400 underline">thirdweb.com/dashboard</a><br/>
+          2️⃣ Selecciona el contrato "${
+            nftType === '721' ? 'Business Card' : 'La Estrella Entonada'
+          }"<br/>
+          3️⃣ Ve a "Claim Conditions" y configura una condición activa<br/>
+          4️⃣ Establece precio, fecha y límites de minteo
+        `);
+      } else if (msg.includes('insufficient funds')) {
+        setFeedback(
+          '❌ Fondos insuficientes para pagar el gas. Necesitas más MATIC.',
+        );
+      } else if (msg.includes('user rejected')) {
+        setFeedback('⚠️ Transacción cancelada por el usuario.');
+      } else {
+        setFeedback(
+          `❌ Error inesperado: ${msg}<br/>Revisa la consola para más detalles.`,
+        );
+      }
     } finally {
       setLoading(false);
     }
   };
+
   const handleGenerateAI = async () => {
     if (!aiPrompt.trim()) {
       return setFeedback('⚠️ Introduce una idea para la IA.');
@@ -144,7 +229,7 @@ export default function CrearNFTPage() {
 
         setImage(file);
         setPreview(data.imageBase64);
-        setFeedback('✨ Metadata e imagen IA generadas exitosamente.');
+        setFeedback('✨ Metadata e imagen generadas exitosamente por IA.');
       } else {
         setFeedback('❌ No se generó la imagen correctamente.');
       }
@@ -164,6 +249,25 @@ export default function CrearNFTPage() {
       </h1>
 
       <div className="bg-zinc-900/80 backdrop-blur-md rounded-2xl shadow-2xl p-8 space-y-8 border border-zinc-700">
+        {/* Información de contratos */}
+        <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+          <h3 className="text-sm font-semibold mb-2 text-blue-300 flex items-center gap-2">
+            <Info className="w-4 h-4" />
+            Contratos Edition Drop (Minteo Público)
+          </h3>
+          <div className="text-xs text-blue-200 space-y-1">
+            <div>
+              🎯 ERC-721: Business Card ({nftDropContract.address.slice(0, 6)}
+              ...{nftDropContract.address.slice(-4)})
+            </div>
+            <div>
+              🎨 ERC-1155: La Estrella Entonada (
+              {editionDropContract.address.slice(0, 6)}...
+              {editionDropContract.address.slice(-4)})
+            </div>
+          </div>
+        </div>
+
         {/* Selector de tipo de NFT */}
         <div className="bg-zinc-800/50 rounded-xl p-4 border border-zinc-600">
           <h3 className="text-lg font-semibold mb-3 text-white flex items-center gap-2">
@@ -181,7 +285,9 @@ export default function CrearNFTPage() {
               }`}
             >
               <div className="font-semibold">ERC-721</div>
-              <div className="text-sm opacity-80">NFT único e irrepetible</div>
+              <div className="text-sm opacity-80">
+                NFT único (Business Card Drop)
+              </div>
             </button>
             <button
               type="button"
@@ -194,7 +300,7 @@ export default function CrearNFTPage() {
             >
               <div className="font-semibold">ERC-1155</div>
               <div className="text-sm opacity-80">
-                Colección con múltiples copias
+                Colección (La Estrella Drop)
               </div>
             </button>
           </div>
@@ -248,36 +354,38 @@ export default function CrearNFTPage() {
           </div>
           {!aiEnabled && (
             <span className="text-xs text-yellow-400">
-              IA no configurada. Puedes crear NFTs en modo Manual sin problema.
+              IA no configurada. Puedes crear NFTs en modo Manual.
             </span>
           )}
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold mb-1 text-zinc-300">
-            Prompt para IA
-          </label>
-          <input
-            type="text"
-            value={aiPrompt}
-            onChange={(e) => setAiPrompt(e.target.value)}
-            placeholder="Ej: Ático de lujo con vistas al mar"
-            className="w-full p-3 rounded-lg border border-zinc-700 bg-zinc-800 text-white placeholder-zinc-500"
-          />
-          <button
-            onClick={handleGenerateAI}
-            disabled={loadingAI || !aiEnabled || mode !== 'ai'}
-            className="mt-3 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50"
-          >
-            {loadingAI ? (
-              <span className="flex items-center justify-center gap-2">
-                <LoaderCircle className="animate-spin w-5 h-5" /> Generando...
-              </span>
-            ) : (
-              '✨ Usar IA para generar metadata e imagen'
-            )}
-          </button>
-        </div>
+        {mode === 'ai' && (
+          <div>
+            <label className="block text-sm font-semibold mb-1 text-zinc-300">
+              Prompt para IA
+            </label>
+            <input
+              type="text"
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              placeholder="Ej: Paisaje montañoso con lago cristalino"
+              className="w-full p-3 rounded-lg border border-zinc-700 bg-zinc-800 text-white placeholder-zinc-500"
+            />
+            <button
+              onClick={handleGenerateAI}
+              disabled={loadingAI || !aiEnabled}
+              className="mt-3 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50"
+            >
+              {loadingAI ? (
+                <span className="flex items-center justify-center gap-2">
+                  <LoaderCircle className="animate-spin w-5 h-5" /> Generando...
+                </span>
+              ) : (
+                '✨ Usar IA para generar metadata e imagen'
+              )}
+            </button>
+          </div>
+        )}
 
         {preview && (
           <div className="text-center">
@@ -346,7 +454,7 @@ export default function CrearNFTPage() {
           </button>
           {feedback && (
             <div
-              className="text-center text-base font-medium text-green-400 [&_a]:underline [&_a:hover]:text-indigo-300"
+              className="text-center text-sm font-medium text-green-400 [&_a]:underline [&_a:hover]:text-indigo-300"
               dangerouslySetInnerHTML={{ __html: feedback }}
             />
           )}
