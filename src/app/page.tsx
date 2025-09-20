@@ -1,39 +1,11 @@
 'use client';
-
 import Link from 'next/link';
-import Image from 'next/image';
+import { HeroMemories } from '../components/HeroMemories';
 
 export default function Home() {
   return (
     <>
-      {/* Hero principal Memories */}
-      <section className="w-full flex flex-col items-center justify-center min-h-[60vh] bg-gradient-to-tr from-indigo-100/50 via-white to-indigo-50/20 px-6 pt-20 pb-10">
-        <div className="flex flex-col items-center max-w-2xl text-center gap-6">
-          <h1 className="text-4xl lg:text-5xl font-extrabold text-indigo-800 drop-shadow-sm">
-            Crea, descubre y comparte NFTs irrepetibles para tus mejores
-            recuerdos.
-          </h1>
-          <p className="text-lg text-gray-600 max-w-xl">
-            Convierte momentos irrepetibles en coleccionables digitales:
-            familia, amigos, logros personales, viajes, arte espontáneo o ideas
-            creativas. Sube tu imagen o deja que la IA genere arte y metadata
-            únicas sobre Polygon para siempre.
-          </p>
-          <Link href="/marketplace">
-            <button className="bg-indigo-600 text-white px-8 py-4 rounded-full hover:bg-indigo-700 transition text-lg font-semibold shadow-lg mt-4">
-              Explorar momentos y eventos
-            </button>
-          </Link>
-        </div>
-        {/* Imagen de portada Memories */}
-        <Image
-          src="/images/fondo.png"
-          alt="Banner Memories NFT"
-          width={1200}
-          height={600}
-          className="mt-12 w-full max-w-3xl rounded-3xl shadow-xl border"
-        />
-      </section>
+      <HeroMemories />
 
       {/* Sección de beneficios/valores del marketplace */}
       <section className="w-full flex flex-col md:flex-row justify-center items-stretch gap-10 py-14 bg-white border-t">
@@ -67,7 +39,7 @@ export default function Home() {
       </section>
 
       {/* Llamado secundario */}
-      <section className="flex flex-col items-center justify-center py-14 bg-indigo-50 border-t border-indigo-100">
+      <section className="flex flex-col items-center justify-center py-14 bg-indigo-50 border-t border-indigo-100 dark:bg-indigo-900/20 dark:border-indigo-800">
         <h2 className="text-2xl font-semibold mb-4 text-indigo-800">
           ¿Quieres crear tu propio NFT de un momento especial?
         </h2>

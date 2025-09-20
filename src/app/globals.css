@@ -164,3 +164,130 @@
 .dark .gradient-hero-memories::after {
   background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
 }
+
+/* Hero animado moderno */
+.hero-animated-bg {
+  --c1: 210 90% 60%;
+  --c2: 265 85% 62%;
+  --c3: 310 80% 60%;
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      circle at 20% 30%,
+      hsl(var(--c1) / 0.25),
+      transparent 55%
+    ),
+    radial-gradient(circle at 80% 70%, hsl(var(--c2) / 0.25), transparent 60%),
+    radial-gradient(circle at 50% 50%, hsl(var(--c3) / 0.18), transparent 65%),
+    linear-gradient(
+      120deg,
+      oklch(0.28 0.06 280) 0%,
+      oklch(0.22 0.04 300) 60%,
+      oklch(0.22 0.04 340) 100%
+    );
+  animation: hero-shift 18s linear infinite;
+  mask: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.9),
+    rgba(0, 0, 0, 0.6),
+    rgba(0, 0, 0, 0.4)
+  );
+}
+.dark .hero-animated-bg {
+  background: radial-gradient(
+      circle at 25% 35%,
+      oklch(0.55 0.18 290 / 0.35),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 75% 65%,
+      oklch(0.55 0.18 330 / 0.35),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      oklch(0.45 0.1 310 / 0.3),
+      transparent 65%
+    ),
+    linear-gradient(
+      120deg,
+      oklch(0.23 0.05 280) 0%,
+      oklch(0.21 0.05 300) 60%,
+      oklch(0.21 0.05 340) 100%
+    );
+}
+
+@keyframes hero-shift {
+  0% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  50% {
+    filter: hue-rotate(25deg) brightness(1.05);
+  }
+  100% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+}
+
+/* Efecto glass reutilizable para tiles */
+.glass-tile {
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+}
+.dark .glass-tile {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.07) inset;
+}
+
+/* Capa de ruido sutil (profundidad adicional) */
+.hero-noise-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  background-image: repeating-radial-gradient(
+    circle at 0 0,
+    rgba(255, 255, 255, 0.05) 0,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.35;
+  animation: noisePulse 6s ease-in-out infinite alternate;
+}
+.dark .hero-noise-overlay {
+  opacity: 0.22;
+}
+
+@keyframes noisePulse {
+  0% {
+    filter: contrast(100%) brightness(100%);
+  }
+  50% {
+    filter: contrast(115%) brightness(105%);
+  }
+  100% {
+    filter: contrast(100%) brightness(100%);
+  }
+}
+
+/* Animación flotante para decoraciones */
+.float-slow {
+  animation: floatY 12s ease-in-out infinite;
+}
+.float-delay {
+  animation-delay: 4s;
+}
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+}

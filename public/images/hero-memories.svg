@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="640" viewBox="0 0 1440 640" fill="none">
+  <defs>
+    <linearGradient id="g-bg" x1="0" y1="0" x2="1440" y2="640" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="40%" stop-color="#312e81"/>
+      <stop offset="75%" stop-color="#4338ca"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(380 180) rotate(45) scale(420 320)">
+      <stop stop-color="#6366f1" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1080 420) rotate(45) scale(480 360)">
+      <stop stop-color="#8b5cf6" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="g-card" x1="0" y1="0" x2="260" y2="260" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.03"/>
+    </linearGradient>
+    <filter id="f-blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="40" result="b"/>
+      <feMerge><feMergeNode in="b"/></feMerge>
+    </filter>
+    <style>
+      .title { font: 700 80px/1 'Inter', 'Segoe UI', Arial, sans-serif; letter-spacing:-1.5px; }
+      .subtitle { font: 400 24px/1.45 'Inter', 'Segoe UI', Arial, sans-serif; }
+      .small { font: 500 16px/1.4 'Inter', 'Segoe UI', Arial, sans-serif; }
+      @media (max-width: 900px) {
+        .title { font-size:56px; }
+        .subtitle { font-size:20px; }
+      }
+      @media (max-width: 640px) {
+        .title { font-size:38px; }
+        .subtitle { font-size:18px; }
+      }
+    </style>
+  </defs>
+
+  <rect width="1440" height="640" fill="url(#g-bg)"/>
+  <rect width="1440" height="640" fill="#0f172a" opacity="0.15"/>
+  <circle cx="380" cy="180" r="420" fill="url(#glow1)"/>
+  <circle cx="1080" cy="420" r="480" fill="url(#glow2)"/>
+
+  <!-- Grid decorativo -->
+  <g stroke="#6366f1" stroke-opacity="0.08" stroke-width="1">
+    <path d="M0 80 H1440"/><path d="M0 160 H1440"/><path d="M0 240 H1440"/><path d="M0 320 H1440"/>
+    <path d="M0 400 H1440"/><path d="M0 480 H1440"/><path d="M0 560 H1440"/>
+    <path d="M180 0 V640"/><path d="M360 0 V640"/><path d="M540 0 V640"/><path d="M720 0 V640"/>
+    <path d="M900 0 V640"/><path d="M1080 0 V640"/><path d="M1260 0 V640"/>
+  </g>
+
+  <!-- Contenido textual -->
+  <g transform="translate(140 150)" fill="#fff">
+    <text class="title" y="0">Memories</text>
+    <text class="subtitle" y="110" opacity="0.92">Convierte momentos y emociones en NFTs únicos sobre Polygon.</text>
+    <text class="subtitle" y="150" opacity="0.65">Sube tu imagen o deja que la IA cree el arte y la metadata perfecta.</text>
+    <g class="small" fill="#e0e7ff" opacity="0.85" aria-label="bullets">
+      <text y="210">• IA para arte + metadata</text>
+      <text y="238">• Ediciones únicas o múltiples</text>
+      <text y="266">• Marketplace y verificación on-chain</text>
+    </g>
+  </g>
+
+  <!-- Tarjetas / íconos conceptuales -->
+  <g transform="translate(940 150)">
+    <g transform="translate(0 0)">
+      <rect width="120" height="120" rx="28" fill="url(#g-card)" stroke="#ffffff" stroke-opacity="0.15"/>
+      <path d="M36 70l18-24 14 18 6-8 14 18H36z M36 50a8 8 0 018-8h32a8 8 0 018 8v32a8 8 0 01-8 8H44a8 8 0 01-8-8V50z" fill="#c7d2fe" fill-opacity="0.9"/>
+    </g>
+    <g transform="translate(150 0)">
+      <rect width="120" height="120" rx="28" fill="url(#g-card)" stroke="#ffffff" stroke-opacity="0.15"/>
+      <path d="M48 44h24v32H48V44zm40 8h-8v16h8V52zM40 40a8 8 0 00-8 8v32a8 8 0 008 8h40a8 8 0 008-8v-4h4a8 8 0 008-8V60a8 8 0 00-8-8h-4v-4a8 8 0 00-8-8H40z" fill="#ddd6fe" fill-opacity="0.92"/>
+    </g>
+    <g transform="translate(0 150)">
+      <rect width="120" height="120" rx="28" fill="url(#g-card)" stroke="#ffffff" stroke-opacity="0.15"/>
+      <path d="M60 40c11 0 20 9 20 20s-9 20-20 20-20-9-20-20 9-20 20-20zm0-12c-17.7 0-32 14.3-32 32 0 7.1 2.3 13.7 6.2 19.1L28 100l21.1-6.2A31.8 31.8 0 0060 100c17.7 0 32-14.3 32-32s-14.3-32-32-32z" fill="#c4b5fd" fill-opacity="0.95"/>
+    </g>
+    <g transform="translate(150 150)">
+      <rect width="120" height="120" rx="28" fill="url(#g-card)" stroke="#ffffff" stroke-opacity="0.15"/>
+      <path d="M60 40a12 12 0 0112 12v4h4a12 12 0 0112 12v20H44V68a12 12 0 0112-12h4v-4a12 12 0 0112-12zm0-12c-13.3 0-24 10.7-24 24v.3A20 20 0 0040 76v16a8 8 0 008 8h24a8 8 0 008-8V76a20 20 0 00-4-12.7V52c0-13.3-10.7-24-24-24z" fill="#a5b4fc" fill-opacity="0.95"/>
+    </g>
+  </g>
+
+  <!-- Filtro suave top -->
+  <rect width="1440" height="640" fill="url(#fade)" pointer-events="none"/>
+  <defs>
+    <linearGradient id="fade" x1="720" y1="0" x2="720" y2="640" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a" stop-opacity="0.55"/>
+      <stop offset="25%" stop-color="#0f172a" stop-opacity="0.25"/>
+      <stop offset="60%" stop-color="#0f172a" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.15"/>
+    </linearGradient>
+  </defs>
+</svg>
