@@ -52,7 +52,9 @@ export function HeroMemories() {
 
   return (
     <section
-      ref={(el) => (containerRef.current = el)}
+      ref={(el) => {
+        containerRef.current = el;
+      }}
       onPointerMove={handlePointerMove}
       onPointerLeave={resetPointer}
       className="relative overflow-hidden isolate select-none"
