@@ -24,7 +24,6 @@ const wallets = [
     },
     metadata: {
       name: 'Memories',
-      image: { src: '/logo.svg', width: 96, height: 96 },
     },
     executionMode: { mode: 'EIP7702', sponsorGas: true },
   }),
