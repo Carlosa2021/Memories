@@ -2,11 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { MediaRenderer } from 'thirdweb/react';
+// Intentar primero con ERC-721; si el contrato es Edition Drop (1155) esto sigue funcionando en la mayoría de implementaciones.
+// Si fuera necesario cambiar a la extensión erc1155, se puede ajustar dinámicamente.
 import { getNFT } from 'thirdweb/extensions/erc721';
 import type { ThirdwebContract } from 'thirdweb';
 import { Card, CardContent } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
 import { client } from '@/lib/thirdweb/client-browser';
+import { resolveIPFSAll } from '@/lib/ipfs';
 
 console.log(
   'NFTCard > THIRDWEB_CLIENT_ID:',
@@ -48,10 +51,17 @@ export const NFTCard = ({
     router.push(`/marketplace/detalles_propiedad/${listingId}`);
   };
 
-  const resolveIPFS = (url?: string) =>
-    url?.startsWith('ipfs://')
-      ? url.replace('ipfs://', 'https://ipfs.io/ipfs/')
-      : url;
+  const [imageCandidates, setImageCandidates] = useState<string[]>([]);
+  const [imgIdx, setImgIdx] = useState(0);
+
+  // Cuando cambie el nft, recalculamos candidatos de imagen
+  useEffect(() => {
+    if (nft?.metadata?.image) {
+      const candidates = resolveIPFSAll(nft.metadata.image);
+      setImageCandidates(candidates);
+      setImgIdx(0);
+    }
+  }, [nft?.metadata?.image]);
 
   return (
     <div onClick={handleClick} className="cursor-pointer group">
@@ -62,12 +72,26 @@ export const NFTCard = ({
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mb-2"></div>
               <span className="text-sm text-gray-500">Cargando...</span>
             </div>
-          ) : nft?.metadata?.image ? (
-            <MediaRenderer
-              client={client}
-              src={resolveIPFS(nft.metadata.image)}
-              className="w-full h-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-110"
-            />
+          ) : imageCandidates.length > 0 ? (
+            <>
+              <MediaRenderer
+                client={client}
+                src={imageCandidates[imgIdx]}
+                className="w-full h-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-110"
+              />
+              {/* img oculta para detectar error y pasar al siguiente gateway */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imageCandidates[imgIdx]}
+                alt="hidden-check"
+                style={{ display: 'none' }}
+                onError={() => {
+                  if (imgIdx + 1 < imageCandidates.length) {
+                    setImgIdx(imgIdx + 1);
+                  }
+                }}
+              />
+            </>
           ) : (
             <span className="text-sm text-red-500">
               No se pudo cargar la imagen

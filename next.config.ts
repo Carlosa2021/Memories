@@ -34,6 +34,11 @@ const nextConfig = {
         hostname: 'gateway.pinata.cloud',
         pathname: '/ipfs/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'cloudflare-ipfs.com',
+        pathname: '/ipfs/**',
+      },
     ],
   },
   webpack: (config: WebpackLikeConfig, { isServer }: { isServer: boolean }) => {
