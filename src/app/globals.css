@@ -124,3 +124,43 @@
 .nft-img-rounded :global(img) {
   border-radius: 1rem; /* Equivalente a rounded-2xl */
 }
+
+/* Gradiente suave para el hero del marketplace (modo claro & oscuro) */
+.gradient-hero-memories {
+  /* Gradiente más pastel y menos saturado */
+  background: linear-gradient(
+    120deg,
+    oklch(0.92 0.06 300) 0%,
+    oklch(0.94 0.04 320) 35%,
+    oklch(0.96 0.03 10) 70%,
+    oklch(0.97 0.02 70) 100%
+  );
+  position: relative;
+}
+.dark .gradient-hero-memories {
+  background: linear-gradient(
+    120deg,
+    oklch(0.4 0.08 300) 0%,
+    oklch(0.42 0.07 320) 35%,
+    oklch(0.44 0.06 10) 70%,
+    oklch(0.46 0.05 70) 100%
+  );
+}
+
+.gradient-hero-memories::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 70px;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0)
+  );
+  pointer-events: none;
+}
+.dark .gradient-hero-memories::after {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+}

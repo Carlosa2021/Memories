@@ -85,18 +85,16 @@ export default function MarketplacePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-gray-900">
       {/* Hero Section Minimalista con Clase */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-24">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <section className="gradient-hero-memories text-gray-900 dark:text-white py-20 md:py-24">
         <div className="relative max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 drop-shadow-lg">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
             Mercado de Memorias NFT
           </h1>
-          <p className="text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl font-medium max-w-3xl mx-auto leading-relaxed opacity-90">
             Descubre y adquiere NFTs únicos para tus momentos especiales. Crea,
             colecciona y comparte recuerdos eternos.
           </p>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent"></div>
       </section>
 
       {/* Controles de Búsqueda y Ordenamiento con Estilo Premium */}
